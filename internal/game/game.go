@@ -5,8 +5,8 @@ import (
 )
 
 type Field struct {
-	// The cells is a 2D array of cells
-	cells  [][]*Cell
+	// The Cells is a 2D array of Cells
+	Cells  [][]*Cell
 	width  int
 	height int
 
@@ -18,6 +18,10 @@ type Field struct {
 
 // Create a new field with the given dimensions and number of mines
 func NewField(width, height, numMines int) (*Field, error) {
+	if numMines < 0 {
+		return nil, &ErrNegativeMines{numMines}
+	}
+
 	gridSize := width * height
 	if numMines > gridSize {
 		return nil, &ErrTooManyMines{numMines, gridSize}
@@ -32,10 +36,16 @@ func NewField(width, height, numMines int) (*Field, error) {
 	for _, mine := range mines {
 		x := mine % width
 		y := mine / width
-		cells[y][x].isMine = true
+		cells[y][x].IsMine = true
 	}
 
-	f := &Field{cells, numMines, 0, width, height}
+	f := &Field{
+		Cells:           cells,
+		width:           width,
+		height:          height,
+		numMines:        numMines,
+		numFlaggedMines: 0,
+	}
 	f.calculateAdjacentMines()
 
 	return f, nil
@@ -44,7 +54,7 @@ func NewField(width, height, numMines int) (*Field, error) {
 // Make fields printable
 func (f *Field) String() string {
 	s := ""
-	for _, row := range f.cells {
+	for _, row := range f.Cells {
 		for _, cell := range row {
 			s += cell.String()
 		}
@@ -56,10 +66,10 @@ func (f *Field) String() string {
 // Attempt to reveal cell at position (x, y)
 func (f *Field) Reveal(x, y int) error {
 	if f.isOutOfBounds(x, y) {
-		return &ErrOutOfBounds{x, y, len(f.cells[0]), len(f.cells)}
+		return &ErrOutOfBounds{x, y, f.width, f.height}
 	}
 
-	cell := f.cells[y][x]
+	cell := f.Cells[y][x]
 	return cell.revealAndCheck()
 }
 
@@ -68,17 +78,17 @@ func (f *Field) isOutOfBounds(x, y int) bool {
 }
 
 func (f *Field) Flag(x, y int) {
-	cell := f.cells[y][x]
+	cell := f.Cells[y][x]
 	cell.flag()
-	if cell.isMine {
+	if cell.IsMine {
 		f.numFlaggedMines++
 	}
 }
 
 func (f *Field) Unflag(x, y int) {
-	cell := f.cells[y][x]
+	cell := f.Cells[y][x]
 	cell.unflag()
-	if cell.isMine {
+	if cell.IsMine {
 		f.numFlaggedMines--
 	}
 }
@@ -88,7 +98,7 @@ func (f *Field) IsWon() bool {
 }
 
 func (f *Field) RevealAll() {
-	for _, row := range f.cells {
+	for _, row := range f.Cells {
 		for _, cell := range row {
 			cell.reveal()
 		}
@@ -96,14 +106,14 @@ func (f *Field) RevealAll() {
 }
 
 func (f *Field) calculateAdjacentMines() {
-	for y, row := range f.cells {
+	for y, row := range f.Cells {
 		for x, cell := range row {
-			if cell.isMine {
+			if cell.IsMine {
 				continue
 			}
 			for _, neighbor := range f.getNeighbors(x, y) {
-				if neighbor.isMine {
-					cell.numAdjacentMines++
+				if neighbor.IsMine {
+					cell.NumAdjacentMines++
 				}
 			}
 		}
@@ -116,10 +126,10 @@ func (f *Field) getNeighbors(x, y int) []*Cell {
 		for j := -1; j <= 1; j++ {
 			nx := x + i
 			ny := y + j
-			if nx < 0 || nx >= len(f.cells[0]) || ny < 0 || ny >= len(f.cells) {
+			if nx < 0 || nx >= len(f.Cells[0]) || ny < 0 || ny >= len(f.Cells) {
 				continue
 			}
-			neighbors = append(neighbors, f.cells[ny][nx])
+			neighbors = append(neighbors, f.Cells[ny][nx])
 		}
 	}
 	return neighbors

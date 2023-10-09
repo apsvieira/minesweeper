@@ -1,0 +1,13 @@
+{{ define "cell" }}
+<td id="cell-{{ .x }}-{{ .y }}" class="cell cell-ismine-{{.Cell.IsMine}} cell-isrevealed-{{.Cell.IsRevealed}}"
+    hx-trigger="click" hx-post="/reveal" hx-refresh="true" hx-vals='{"x": {{ .x }}, "y": {{ .y }}}' hx-target="this"
+    hx-swap="outerHTML">
+    {{ if .Cell.IsFlagged }}
+    <span class="cell-content">🚩</span>
+    {{ else if and (.Cell.IsMine) (.Cell.IsRevealed)}}
+    <span class="cell-content">⚙️</span>
+    {{ else if .Cell.IsRevealed }}
+    <span class="cell-content">{{.Cell.NumAdjacentMines}}</span>
+    {{ end }}
+</td>
+{{ end }}

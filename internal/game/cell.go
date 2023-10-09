@@ -6,40 +6,40 @@ import (
 
 type Cell struct {
 	// The number of mines adjacent to this cell
-	numAdjacentMines int
+	NumAdjacentMines int
 	// Whether this cell is a mine
-	isMine bool
+	IsMine bool
 	// Whether this cell has been revealed
-	isRevealed bool
+	IsRevealed bool
 	// Whether this cell has been flagged
-	isFlagged bool
+	IsFlagged bool
 }
 
 // Make cells printable
 func (c *Cell) String() string {
-	if c.isFlagged {
+	if c.IsFlagged {
 		return "F"
 	}
-	if !c.isRevealed {
+	if !c.IsRevealed {
 		return "."
 	}
-	if c.isMine {
+	if c.IsMine {
 		return "M"
 	}
-	return fmt.Sprintf("%d", c.numAdjacentMines)
+	return fmt.Sprintf("%d", c.NumAdjacentMines)
 }
 
 func (c *Cell) reveal() {
-	if c.isFlagged {
+	if c.IsFlagged {
 		return
 	}
 
-	c.isRevealed = true
+	c.IsRevealed = true
 }
 
 func (c *Cell) revealAndCheck() error {
 	c.reveal()
-	if c.isMine {
+	if c.IsMine {
 		return ErrMineHit
 	}
 
@@ -47,9 +47,9 @@ func (c *Cell) revealAndCheck() error {
 }
 
 func (c *Cell) flag() {
-	c.isFlagged = true
+	c.IsFlagged = true
 }
 
 func (c *Cell) unflag() {
-	c.isFlagged = false
+	c.IsFlagged = false
 }

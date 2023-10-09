@@ -1,0 +1,38 @@
+{{define "game"}}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Minesweeper</title>
+    <meta charset="UTF-8" />
+    <script src="https://unpkg.com/htmx.org@1.9.6"
+        integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body hx-boost="true" hx-select="body">
+    <section>
+        <form hx-post="/new">
+            <div>
+                <label>Grid Width</label>
+                <input type="number" name="width" value="10" />
+            </div>
+            <div>
+                <label>Grid Height</label>
+                <input type="number" name="height" value="10" />
+            </div>
+            <div>
+                <label>Number of Mines</label>
+                <input type="number" name="mines" value="10" />
+            </div>
+            <input type="submit" value="Start">
+        </form>
+    </section>
+    <section>
+        {{ template "grid" . }}
+    </section>
+</body>
+
+</html>
+{{end}}

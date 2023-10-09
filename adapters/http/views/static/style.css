@@ -1,0 +1,67 @@
+section {
+    width: 500px;
+    margin: 1em auto;
+}
+
+body {
+    font-family: 'Courier Prime', monospace;
+    font-size: 20px;
+    background-color: lightgrey;
+}
+
+h1 {
+    text-align: center;
+    font-size: 5em;
+    margin: 0;
+    padding: 0;
+}
+
+
+label {
+    display: flex;
+}
+
+label input {
+    width: 100%;
+    margin-left: 1em;
+}
+
+button {
+    all: unset;
+    cursor: pointer;
+    font-size: 0.6em;
+}
+
+button:focus {
+    outline: red 5px auto;
+}
+
+.cell {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.cell:focus {
+    outline: red 5px auto;
+}
+
+.cell-ismine-true {
+    background-color: lightcoral;
+}
+
+.cell-ismine-false {
+    background-color: lightgreen;
+}
+
+.cell-gameover-true {
+    /* Make cell fully red and contents invisible*/
+    background-color: red;
+}
+
+.cell-isrevealed-false {
+    /* Make cell fully gray and contents invisible*/
+    background-color: gray;
+    color: gray;
+}

@@ -26,3 +26,11 @@ type ErrOutOfBounds struct {
 func (e *ErrOutOfBounds) Error() string {
 	return fmt.Sprintf("position (%d, %d) is out of bounds (max: %d, %d)", e.x, e.y, e.xMax, e.yMax)
 }
+
+type ErrNegativeMines struct {
+	numMines int
+}
+
+func (e *ErrNegativeMines) Error() string {
+	return fmt.Sprintf("negative number of mines (%d)", e.numMines)
+}
