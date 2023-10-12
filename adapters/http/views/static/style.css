@@ -4,9 +4,12 @@ section {
 }
 
 body {
-    font-family: 'Courier Prime', monospace;
-    font-size: 20px;
-    background-color: lightgrey;
+    font-family: "Roboto", monospace;
+    font-size: 25px;
+    font-weight: bold;
+    -webkit-text-stroke-width: 0.01px;
+    -webkit-text-stroke-color: black;
+    background-color: black;
 }
 
 h1 {
@@ -19,6 +22,7 @@ h1 {
 
 label {
     display: flex;
+    color: white;
 }
 
 label input {
@@ -37,31 +41,26 @@ button:focus {
 }
 
 .cell {
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
+    font-size: 20px;
     text-align: center;
-    border: 1px solid black;
-}
-
-.cell:focus {
-    outline: red 5px auto;
+    color: black;
+    border: 0.1px solid black;
+    background-color: lightskyblue;
 }
 
 .cell-ismine-true {
     background-color: lightcoral;
 }
 
-.cell-ismine-false {
-    background-color: lightgreen;
-}
-
-.cell-gameover-true {
-    /* Make cell fully red and contents invisible*/
-    background-color: red;
-}
-
 .cell-isrevealed-false {
     /* Make cell fully gray and contents invisible*/
     background-color: gray;
     color: gray;
+}
+
+.grid {
+    border-collapse: collapse;
+    margin: 0 auto;
 }

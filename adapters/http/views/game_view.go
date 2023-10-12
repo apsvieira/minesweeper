@@ -25,6 +25,16 @@ func (t *GameView) RenderGrid(w http.ResponseWriter, f *game.Field) {
 	if err := t.templ.ExecuteTemplate(w, "grid", f); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
 
-	w.Header().Set("Content-Type", "text/html")
+func (t *GameView) RenderCell(w http.ResponseWriter, f *game.Field, x, y int) {
+	data := map[string]any{
+		"cell": f.Cells[x][y],
+		"x":    x,
+		"y":    y,
+	}
+
+	if err := t.templ.ExecuteTemplate(w, "cell", data); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

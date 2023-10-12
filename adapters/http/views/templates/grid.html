@@ -1,5 +1,5 @@
 {{ define "grid" }}
-<table id="game" class="grid">
+<table id="grid" class="grid">
     {{ range $y, $Row := .Cells }}
     <tr class="row-{{ $y }}">
         {{ range $x, $Cell := $Row }}

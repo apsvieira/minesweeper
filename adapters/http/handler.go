@@ -2,15 +2,15 @@ package http
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 	"strconv"
 
-	"github.com/apsvieira/minesweeper/adapters/http/views"
-	"github.com/apsvieira/minesweeper/internal/game"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 
-	"net/http"
-	"net/url"
+	"github.com/apsvieira/minesweeper/adapters/http/views"
+	"github.com/apsvieira/minesweeper/internal/game"
 )
 
 func NewHandler() (http.Handler, error) {
@@ -19,21 +19,15 @@ func NewHandler() (http.Handler, error) {
 	r.Use(middleware.NoCache)
 	r.Use(middleware.Heartbeat("/health"))
 
+	staticFiles := http.FileServer(http.Dir("./adapters/http/views/static"))
+	r.Handle("/static/*", http.StripPrefix("/static/", staticFiles))
+	r.Handle("/favicon.ico", staticFiles)
+
 	t, err := views.NewTemplates()
 	if err != nil {
 		return nil, err
 	}
 
-	r.Handle(
-		"/static/style.css",
-		http.StripPrefix("/static/",
-			http.FileServer(
-				http.Dir(
-					"./adapters/http/views/static",
-				),
-			),
-		),
-	)
 	h := &Handler{game: views.NewGameView(t), currentGame: &game.Field{}}
 	r.Get("/", h.show)
 	r.Get("/health", h.healthCheck)
@@ -94,11 +88,13 @@ func (h *Handler) reveal(w http.ResponseWriter, r *http.Request) {
 
 	if err := h.currentGame.Reveal(x, y); err != nil {
 		h.currentGame.RevealAll()
+		w.Header().Set("HX-Retarget", "grid")
+		w.Header().Set("Hx-Refresh", "true")
 		h.game.RenderGrid(w, h.currentGame)
 		return
 	}
 
-	h.game.RenderGrid(w, h.currentGame)
+	h.game.RenderCell(w, h.currentGame, x, y)
 }
 
 func (h *Handler) flag(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +106,7 @@ func (h *Handler) flag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.currentGame.Flag(x, y)
-	h.game.RenderGrid(w, h.currentGame)
+	h.game.RenderCell(w, h.currentGame, x, y)
 }
 
 func (h *Handler) unflag(w http.ResponseWriter, r *http.Request) {
@@ -122,7 +118,7 @@ func (h *Handler) unflag(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.currentGame.Unflag(x, y)
-	h.game.RenderGrid(w, h.currentGame)
+	h.game.RenderCell(w, h.currentGame, x, y)
 }
 
 func parseCoordinates(r *http.Request) (int, int, error) {
@@ -160,9 +156,4 @@ func extractGameParams(vv *url.Values) (int, int, int, error) {
 	}
 
 	return width, height, mines, nil
-}
-
-type coordinates struct {
-	X int `json:"x"`
-	Y int `json:"y"`
 }

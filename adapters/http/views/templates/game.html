@@ -9,11 +9,14 @@
         integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/static/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
-<body hx-boost="true" hx-select="body">
+<body hx-boost="true">
     <section>
-        <form hx-post="/new">
+        <form hx-post="/new" hx-target="body">
             <div>
                 <label>Grid Width</label>
                 <input type="number" name="width" value="10" />
